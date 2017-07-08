@@ -1,0 +1,7 @@
+
+INSERT INTO address (postcode, suburb, state, latitude, longitude, created_on) VALUES
+  ('200', 'AUSTRALIAN NATIONAL UNIVERSITY', 'ACT', -35.277272, 149.117136, CURRENT_TIMESTAMP),
+  ('221', 'BARTON', 'ACT', -35.201372, 149.095065, CURRENT_TIMESTAMP),
+  ('800', 'DARWIN', 'NT', -12.801028, 130.955789, CURRENT_TIMESTAMP)
+  --('', '', '', , , CURRENT_TIMESTAMP),
+  ;
