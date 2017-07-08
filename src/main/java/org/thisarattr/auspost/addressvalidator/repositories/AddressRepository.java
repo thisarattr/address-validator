@@ -8,6 +8,7 @@ import org.thisarattr.auspost.addressvalidator.models.Address;
 
 @Repository
 public interface AddressRepository extends CrudRepository<Address, Long> {
-    List<Address> findBySuburbStartingWithOrderBySuburbAsc(String suburb);
-    List<Address> findByPostcodeStartingWithOrderByPostcodeAsc(String postcode);
+    List<Address> findBySuburbStartingWithIgnoreCaseOrderBySuburbAsc(String suburb);
+
+    List<Address> findByPostcodeStartingWithIgnoreCaseOrderByPostcodeAsc(String postcode);
 }

@@ -13,6 +13,8 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'checkstyle'
+apply plugin: 'jacoco'
 
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
@@ -21,6 +23,21 @@ repositories {
 	mavenCentral()
 }
 
+checkstyle {
+	configFile = file("$projectDir/configs/google-checkstyle.xml")
+	toolVersion = "8.0"
+}
+
+jacoco {
+	toolVersion = "0.7.6.201602180812"
+}
+
+test {
+	jacoco {
+		append = false
+		enabled = true
+	}
+}
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
@@ -29,4 +46,12 @@ dependencies {
 	compile('org.hibernate:hibernate-java8:5.0.12.Final')
 	runtime('com.h2database:h2')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+
 }
+
+tasks.withType(Checkstyle) {
+	classpath = project.sourceSets.main.output
+	classpath += configurations.compile
+	classpath += configurations.testCompile
+}
+

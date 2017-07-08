@@ -15,12 +15,12 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public List<Address> findBySuburb(String suburb) {
-        return addressRepository.findBySuburbStartingWithOrderBySuburbAsc(suburb);
+        return addressRepository.findBySuburbStartingWithIgnoreCaseOrderBySuburbAsc(suburb);
     }
 
     @Override
     public List<Address> findByPostcode(String postcode) {
-        return addressRepository.findByPostcodeStartingWithOrderByPostcodeAsc(postcode);
+        return addressRepository.findByPostcodeStartingWithIgnoreCaseOrderByPostcodeAsc(postcode);
     }
 
     @Override

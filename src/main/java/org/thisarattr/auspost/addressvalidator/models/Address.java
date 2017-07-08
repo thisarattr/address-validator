@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.thisarattr.auspost.addressvalidator.dtos.JsonAddress;
+
 @Entity
 @Table(name = "address")
 public class Address {
@@ -16,19 +18,19 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
-    @Column(name="postcode", nullable = false)
+    @Column(name = "postcode", nullable = false)
     private String postcode;
-    @Column(name="suburb", nullable = false)
+    @Column(name = "suburb", nullable = false)
     private String suburb;
-    @Column(name="state", nullable = false)
+    @Column(name = "state", nullable = false)
     private String state;
-    @Column(name="latitude")
+    @Column(name = "latitude")
     private Double latitude;
-    @Column(name="longitude")
+    @Column(name = "longitude")
     private Double longitude;
-    @Column(name="created_on", nullable = false)
+    @Column(name = "created_on", nullable = false)
     private LocalDateTime createdOn;
-    @Column(name="updated_on")
+    @Column(name = "updated_on")
     private LocalDateTime updatedOn;
 
     public String getPostcode() {
@@ -69,5 +71,22 @@ public class Address {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    /**
+     * This will convert current address object into a JsonAddress. JsonAddress will be used in apis.
+     *
+     * @return JsonAddress object
+     */
+    public JsonAddress getJsonAddress() {
+        JsonAddress jsonAddress = new JsonAddress();
+        jsonAddress.setId(this.id);
+        jsonAddress.setPostcode(this.postcode);
+        jsonAddress.setSuburb(this.suburb);
+        jsonAddress.setState(this.state);
+        if (this.latitude != null && this.longitude != null) {
+            jsonAddress.setLocation(new JsonAddress.GeoJson(JsonAddress.Type.Point, this.longitude, this.latitude));
+        }
+        return jsonAddress;
     }
 }

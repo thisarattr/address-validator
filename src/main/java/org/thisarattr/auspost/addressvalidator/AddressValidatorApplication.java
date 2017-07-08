@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class AddressValidatorApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AddressValidatorApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(AddressValidatorApplication.class, args);
+    }
 }
