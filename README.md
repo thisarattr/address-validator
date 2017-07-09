@@ -153,7 +153,7 @@ Reponse:
 ```
 
 ## Build and run
-Gradle is used as build tool and [travis](https://travis-ci.org/thisarattr/address-validator) has been configured to do continuous integration. 
+Gradle is used as build tool and [travis](https://travis-ci.org/thisarattr/address-validator) has been configured for continuous integration. 
 
 **Build**
 
