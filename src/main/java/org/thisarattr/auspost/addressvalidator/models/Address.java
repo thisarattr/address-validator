@@ -6,12 +6,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
-import org.thisarattr.auspost.addressvalidator.dtos.JsonAddress;
+import org.thisarattr.auspost.addressvalidator.dtos.AddressObj;
 
 @Entity
-@Table(name = "address")
+@Table(name = "address", indexes = {
+        @Index(columnList = "postcode", name = "idx_postcode"),
+        @Index(columnList = "suburb", name = "idx_suburb")
+})
 public class Address {
 
     @Id
@@ -32,6 +36,15 @@ public class Address {
     private LocalDateTime createdOn;
     @Column(name = "updated_on")
     private LocalDateTime updatedOn;
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getPostcode() {
         return postcode;
@@ -73,20 +86,36 @@ public class Address {
         this.longitude = longitude;
     }
 
+    public LocalDateTime getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(LocalDateTime createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public LocalDateTime getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public void setUpdatedOn(LocalDateTime updatedOn) {
+        this.updatedOn = updatedOn;
+    }
+
     /**
-     * This will convert current address object into a JsonAddress. JsonAddress will be used in apis.
+     * This will convert current address object into a AddressObj. AddressObj will be used in apis.
      *
-     * @return JsonAddress object
+     * @return AddressObj object
      */
-    public JsonAddress getJsonAddress() {
-        JsonAddress jsonAddress = new JsonAddress();
-        jsonAddress.setId(this.id);
-        jsonAddress.setPostcode(this.postcode);
-        jsonAddress.setSuburb(this.suburb);
-        jsonAddress.setState(this.state);
+    public AddressObj getJsonAddress() {
+        AddressObj addressObj = new AddressObj();
+        addressObj.setId(getId());
+        addressObj.setPostcode(this.postcode);
+        addressObj.setSuburb(this.suburb);
+        addressObj.setState(this.state);
         if (this.latitude != null && this.longitude != null) {
-            jsonAddress.setLocation(new JsonAddress.GeoJson(JsonAddress.Type.Point, this.longitude, this.latitude));
+            addressObj.setLocation(new AddressObj.GeoJson(AddressObj.Type.Point, this.longitude, this.latitude));
         }
-        return jsonAddress;
+        return addressObj;
     }
 }

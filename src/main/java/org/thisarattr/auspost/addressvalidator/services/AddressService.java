@@ -23,8 +23,6 @@ public interface AddressService {
      */
     List<Address> findByPostcode(String postcode);
 
-    /**
-     * Creates a adddress with privided values.
-     */
-    void createAddress();
+
+    void saveAddress(Address address);
 }

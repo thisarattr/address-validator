@@ -5,3 +5,11 @@ INSERT INTO address (postcode, suburb, state, latitude, longitude, created_on) V
   ('800', 'DARWIN', 'NT', -12.801028, 130.955789, CURRENT_TIMESTAMP)
   --('', '', '', , , CURRENT_TIMESTAMP),
   ;
+
+
+INSERT INTO user (username, password, role, created_on) VALUES
+  ('user', '$2a$10$ggOZSoLpYVNpmL0M9xVtp.e.cvk2copyXcYEZO4P8zhMOTrYqIGMO', 'user', CURRENT_TIMESTAMP),
+  ('admin', '$2a$10$ggOZSoLpYVNpmL0M9xVtp.e.cvk2copyXcYEZO4P8zhMOTrYqIGMO', 'admin', CURRENT_TIMESTAMP)
+  ;
+
+

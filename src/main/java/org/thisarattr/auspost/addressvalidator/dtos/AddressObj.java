@@ -1,11 +1,14 @@
 package org.thisarattr.auspost.addressvalidator.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import org.thisarattr.auspost.addressvalidator.models.Address;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class JsonAddress {
+public class AddressObj {
 
     private Long id;
     private String postcode;
@@ -51,6 +54,19 @@ public class JsonAddress {
 
     public void setLocation(GeoJson location) {
         this.location = location;
+    }
+
+    @JsonIgnore
+    public Address getAddress() {
+        Address address = new Address();
+        address.setPostcode(getPostcode());
+        address.setSuburb(getSuburb());
+        address.setState(getState());
+        if (getLocation() != null) {
+            address.setLongitude(getLocation().getCoordinates()[0]);
+            address.setLatitude(getLocation().getCoordinates()[1]);
+        }
+        return address;
     }
 
     public static class GeoJson {
