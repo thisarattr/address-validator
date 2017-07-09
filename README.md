@@ -3,6 +3,13 @@
 # Address Validator
 This sample application provide simple apis to access (or search) address information via couple of apis and a secure api to save address information as per user provides. Because of the secure api, one more api added to autheticate the user and return token for secure api.
 
+Little bit background on the application,
+1. Security: Login api will check the database for user credentials and if its valid then generate a jwt token with the configured jwt secret. Secret is configure in the property file but it can be read from environment for security reason. Then this jwt token will be returned back to user.
+Registration bean has used to forward all the secure api starting with `/api/v1/admin/*` into a `JwtTokenFilter` which validate the token and check the cache to see if its not expired. If not you will get access to the api and else `401 unauthoried` eror is raised. 
+2. CacheService: This is used to cache the user tokens with expire time so that use can use same token intill it expire for multiple requests. As per current configuration cache expire in 60 mins.
+3. Google checkstle is used with minor changes
+4. Integration test cover all the functionalities and since there are minimum logics involved, very minimum unit tests used. Overall test coverage is about 80-90%. Check the jacoco reports.
+
 ## Libraries
 Application is done basically using, spring boot framework, gradle as build tool and h2 as database.
 * Spring boot 1.5.4
@@ -144,3 +151,16 @@ Reponse:
 401 Unauthorized - token is not valid or expired
 500 Internal Server Error
 ```
+
+## Build and run
+Gradle is used as build tool and [travis](https://travis-ci.org/thisarattr/address-validator) has been configured to do continuous integration. 
+
+**Build**
+
+`./gradlew clean build`
+
+**Run**
+
+Artificats can be located at `$buildDir/lib/address-validator-1.0.jar`
+
+`java -jar pathToJar/address-validator-1.0.jar`
