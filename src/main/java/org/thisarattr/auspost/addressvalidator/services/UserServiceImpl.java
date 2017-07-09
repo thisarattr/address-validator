@@ -10,8 +10,12 @@ import org.thisarattr.auspost.addressvalidator.repositories.UserRepository;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public Optional<User> find(String username) {

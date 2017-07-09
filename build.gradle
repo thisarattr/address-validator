@@ -16,7 +16,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'checkstyle'
 apply plugin: 'jacoco'
 
-version = '0.0.1-SNAPSHOT'
+version = '1.0'
 sourceCompatibility = 1.8
 
 repositories {
@@ -30,12 +30,22 @@ checkstyle {
 
 jacoco {
 	toolVersion = "0.7.6.201602180812"
+	reportsDir = file("$buildDir/reports/jacoco")
 }
 
 test {
 	jacoco {
 		append = false
 		enabled = true
+		destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+	}
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled false
+		csv.enabled false
+		html.destination "${buildDir}/reports/jacoco/jacocoHtml"
 	}
 }
 
@@ -56,5 +66,27 @@ tasks.withType(Checkstyle) {
 	classpath = project.sourceSets.main.output
 	classpath += configurations.compile
 	classpath += configurations.testCompile
+}
+
+jar {
+	baseName = project.name
+	version = "$version"
+	manifest {
+		attributes 'Specification-Title': 'Address Validator'
+		attributes 'Main-Class': 'org.thisarattr.auspost.addressvalidator.AddressValidatorApplication'
+		attributes 'Specification-Version': "$version"
+		attributes 'Implementation-Version': "$version"
+		attributes "Implementation-Timestamp": new Date()
+	}
+}
+
+springBoot {
+	executable = true
+	mainClass = 'org.thisarattr.auspost.addressvalidator.AddressValidatorApplication'
+}
+
+task sourcesJar(type: Jar) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
 }
 

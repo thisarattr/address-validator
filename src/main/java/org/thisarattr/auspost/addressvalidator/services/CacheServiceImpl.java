@@ -22,6 +22,8 @@ public class CacheServiceImpl implements CacheService {
 
     @Override
     public void put(String key, User user) {
+        /*This is bad practice to reuse field for totally different purpose. But this is just a workaround. Whole cache
+        service need to be replace with proper cache.*/
         user.setCreatedOn(LocalDateTime.now().plusSeconds(expiresInSec));
         cache.put(key, user);
     }

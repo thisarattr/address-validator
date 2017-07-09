@@ -1,6 +1,5 @@
 package org.thisarattr.auspost.addressvalidator.dtos;
 
-
 import java.util.List;
 
 public class AddressResponse extends Response {

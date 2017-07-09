@@ -6,7 +6,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.stringContainsInOrder;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNotNull;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -221,4 +223,60 @@ public class AddressValidatorIntegrationTests {
         assertThat(resEntity.getBody().getMessage(), containsString("Missing or invalid Authorization header"));
     }
 
+
+    @Test
+    public void shouldLoginWhenCorrectCredentialsProvided() {
+        LoginRequest loginReq = new LoginRequest("user", "password");
+        MultiValueMap<String, String> loginHeaders = new LinkedMultiValueMap<>();
+        loginHeaders.add("Content-Type", "application/json");
+        HttpEntity<LoginRequest> loginReqEntity = new HttpEntity<>(loginReq, loginHeaders);
+        ResponseEntity<LoginResponse> loginResEntity = restTemplate.exchange("/login", HttpMethod.POST,
+                loginReqEntity, LoginResponse.class);
+
+        assertThat(loginResEntity.getStatusCode().value(), is(200));
+        assertNotNull(loginResEntity.getBody());
+        assertNotNull(loginResEntity.getBody().getJwtToken());
+    }
+
+    @Test
+    public void shouldFailLoginWhenIncorrectCredentialsProvided() {
+        LoginRequest loginReq = new LoginRequest("user", "password1");
+        MultiValueMap<String, String> loginHeaders = new LinkedMultiValueMap<>();
+        loginHeaders.add("Content-Type", "application/json");
+        HttpEntity<LoginRequest> loginReqEntity = new HttpEntity<>(loginReq, loginHeaders);
+        ResponseEntity<LoginResponse> loginResEntity = restTemplate.exchange("/login", HttpMethod.POST,
+                loginReqEntity, LoginResponse.class);
+
+        assertThat(loginResEntity.getStatusCode().value(), is(401));
+        assertNotNull(loginResEntity.getBody());
+        assertThat(loginResEntity.getBody().getMessage(), is("Incorrect username or password"));
+    }
+
+    @Test
+    public void shouldFailLoginWhenMandatoryFieldsNotProvided() {
+        LoginRequest loginReq = new LoginRequest("user", null);
+        MultiValueMap<String, String> loginHeaders = new LinkedMultiValueMap<>();
+        loginHeaders.add("Content-Type", "application/json");
+        HttpEntity<LoginRequest> loginReqEntity = new HttpEntity<>(loginReq, loginHeaders);
+        ResponseEntity<LoginResponse> loginResEntity = restTemplate.exchange("/login", HttpMethod.POST,
+                loginReqEntity, LoginResponse.class);
+
+        assertThat(loginResEntity.getStatusCode().value(), is(400));
+        assertNotNull(loginResEntity.getBody());
+        assertThat(loginResEntity.getBody().getMessage(), is("Username and password are mandatory"));
+    }
+
+    @Test
+    public void shouldFailLoginWhenUserNotFound() {
+        LoginRequest loginReq = new LoginRequest("user123", "password");
+        MultiValueMap<String, String> loginHeaders = new LinkedMultiValueMap<>();
+        loginHeaders.add("Content-Type", "application/json");
+        HttpEntity<LoginRequest> loginReqEntity = new HttpEntity<>(loginReq, loginHeaders);
+        ResponseEntity<LoginResponse> loginResEntity = restTemplate.exchange("/login", HttpMethod.POST,
+                loginReqEntity, LoginResponse.class);
+
+        assertThat(loginResEntity.getStatusCode().value(), is(401));
+        assertNotNull(loginResEntity.getBody());
+        assertThat(loginResEntity.getBody().getMessage(), is("User not found"));
+    }
 }

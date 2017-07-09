@@ -13,8 +13,12 @@ import org.thisarattr.auspost.addressvalidator.repositories.AddressRepository;
 @Service
 public class AddressServiceImpl implements AddressService {
 
+    private final AddressRepository addressRepository;
+
     @Autowired
-    private AddressRepository addressRepository;
+    public AddressServiceImpl(AddressRepository addressRepository) {
+        this.addressRepository = addressRepository;
+    }
 
     @Override
     public List<Address> findBySuburb(String suburb) {

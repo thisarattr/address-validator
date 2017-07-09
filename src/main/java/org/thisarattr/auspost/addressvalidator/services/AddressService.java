@@ -24,5 +24,10 @@ public interface AddressService {
     List<Address> findByPostcode(String postcode);
 
 
+    /**
+     * Save provided address. postcode, suburb and state field are mandatory, thus when not present throw UserException.
+     *
+     * @param address address project to be saved
+     */
     void saveAddress(Address address);
 }

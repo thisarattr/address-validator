@@ -6,6 +6,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,7 @@ public class LoginController {
     private final CacheService cacheService;
     @Value("${security.jwt.secret}")
     private String secretKey;
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public LoginController(UserService userService, BCryptPasswordEncoder bcryptPasswordEncoder,
@@ -39,21 +42,30 @@ public class LoginController {
         this.cacheService = cacheService;
     }
 
+    /**
+     * Login will validate credentials and if success return the jwt token for subsequent api calls.
+     * @param loginRequest request object with username and password
+     * @return 200 if login success, 400 if mandatory fields are not provided
+     *          401 if user not found in the database or incorrect password.
+     */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
 
         if (loginRequest.getUsername() == null || loginRequest.getPassword() == null) {
+            log.debug("login failed, username or password missing");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new LoginResponse(false, 400, "Username and password are mandatory"));
         }
 
         Optional<User> user = userService.find(loginRequest.getUsername());
         if (!user.isPresent()) {
+            log.debug("login failed, user not found for the user: " + loginRequest.getUsername());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new LoginResponse(false, 401, "User not found"));
         }
 
         if (!bcryptPasswordEncoder.matches(loginRequest.getPassword(), user.get().getPassword())) {
+            log.debug("login failed, incorrect password for the user: " + loginRequest.getUsername());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new LoginResponse(false, 401, "Incorrect username or password"));
         }
